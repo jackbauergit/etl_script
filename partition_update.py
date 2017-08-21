@@ -9,6 +9,7 @@ from config import src_db_name, dest_db_name, test_mode
 
 update_by_col = 'modified'
 partition_col = 'created'
+partition_name = 'dt'
 
 
 def update_hive_table(tbl_name, begin_date):
@@ -26,37 +27,17 @@ def _splice_table_cols(tbl_name):
     lhe = LocalHiveExecutor(query_stmt)
     rows = lhe.execute()
     cols = list()
+    tbl_filter = [partition_col, partition_name]
     for val in rows:
         if not val:
             continue
 
-        if val == partition_col:
+        if val in tbl_filter:
             continue
 
         cols.append(val)
 
     return ', '.join(cols)
-
-
-def _update_hive(
-        src_tbl_name, dest_tbl_name, update_cols, begin_date, gap_days=1):
-    begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
-    end_date_str = _get_after_day(begin_date, gap_days)
-    update_stmt = (
-        "INSERT OVERWRITE TABLE %s.%s PARTITION (dt) "
-        "SELECT %s, substring(%s, 0, 10) as dt from %s.%s "
-        "WHERE %s>='%s' and %s<='%s'") % (
-            dest_db_name, dest_tbl_name, update_cols, partition_col,
-            src_db_name, src_tbl_name, partition_col, begin_date_str,
-            partition_col, end_date_str)
-    lhe = LocalHiveExecutor(update_stmt)
-    lhe.execute()
-    pass
-
-
-def _get_after_day(curr_date, gap_days=1):
-    after_date = curr_date + datetime.timedelta(days=gap_days)
-    return after_date.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def _load_updated_src_tbl_names(tbl_name, begin_date):
@@ -93,6 +74,27 @@ def _load_src_tbl_names(tbl_name):
     releated_tbl_names = [tn for tn in rows if re.search(pattern, tn)]
     logger.debug(releated_tbl_names)
     return releated_tbl_names
+
+
+def _update_hive(
+        src_tbl_name, dest_tbl_name, update_cols, begin_date, gap_days=1):
+    begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
+    end_date_str = _get_after_day(begin_date, gap_days)
+    update_stmt = (
+        "INSERT OVERWRITE TABLE %s.%s PARTITION (%s) "
+        "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
+        "WHERE %s>='%s' and %s<='%s'") % (
+            dest_db_name, dest_tbl_name, partition_name, update_cols,
+            partition_col, src_db_name, src_tbl_name, partition_col,
+            partition_name, begin_date_str, partition_col, end_date_str)
+    lhe = LocalHiveExecutor(update_stmt)
+    lhe.execute()
+    pass
+
+
+def _get_after_day(curr_date, gap_days=1):
+    after_date = curr_date + datetime.timedelta(days=gap_days)
+    return after_date.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def _real_main():
