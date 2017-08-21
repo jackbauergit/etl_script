@@ -11,7 +11,7 @@ def update_hive_table(tbl_name):
     lhe = LocalHiveExecutor(stmt)
     rows = lhe.execute()
 
-    pattern = tbl_name + r'\d*$'
+    pattern = tbl_name + r'(_\d+)?$'
 
     logger.debug(pattern)
     releated_tbl_names = [tn for tn in rows if re.search(pattern, tn)]
