@@ -15,8 +15,8 @@ def update_hive_table(tbl_name, begin_date):
     logger.debug('begin update')
     dest_tbl_name = '%s_with_1_partition' % tbl_name
     update_cols = _splice_table_cols('%s.%s' % (dest_db_name, dest_tbl_name))
-    src_tbl_names = _load_src_tbl_names(tbl_name)
-    for stn in src_tbl_names:
+    update_src_tbl_names = _load_updated_src_tbl_names(tbl_name, begin_date)
+    for stn in update_src_tbl_names:
         _update_hive(
             stn, dest_tbl_name, update_cols, begin_date)
 
