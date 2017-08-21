@@ -3,7 +3,7 @@
 
 
 import subprocess
-from logger import logger_mongodb_etl as logger
+from logger import logger_etl as logger
 
 
 class LocalHiveExecutor():

@@ -5,4 +5,4 @@ import logging.config
 
 logging.config.fileConfig('logger.conf')
 
-logger_mongodb_etl = logging.getLogger("mongodbEtl")
+logger_etl = logging.getLogger("etl")

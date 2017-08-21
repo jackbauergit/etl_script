@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from logger import logger_mongodb_etl as logger
-from ssh_client import LocalHiveExecutor
+from logger import logger_etl as logger
+from shell_client import LocalHiveExecutor
 
 
 def _real_main():
