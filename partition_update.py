@@ -85,8 +85,8 @@ def _update_hive(
         "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
         "WHERE %s>='%s' and %s<='%s'") % (
             dest_db_name, dest_tbl_name, partition_name, update_cols,
-            partition_col, src_db_name, src_tbl_name, partition_col,
-            partition_name, begin_date_str, partition_col, end_date_str)
+            partition_col, partition_name, src_db_name, src_tbl_name,
+            partition_col, begin_date_str, partition_col, end_date_str)
     lhe = LocalHiveExecutor(update_stmt)
     lhe.execute()
     pass
