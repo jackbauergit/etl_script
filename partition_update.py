@@ -21,15 +21,14 @@ def update_hive_table(tbl_name, begin_date):
 
 
 def _splice_table_cols(tbl_name):
-    query_stmt = "desc %s" % tbl_name
+    query_stmt = "SHOW COLUMNS FROM %s" % tbl_name
     lhe = LocalHiveExecutor(query_stmt)
     rows = lhe.execute()
     cols = list()
-    for row in rows:
-        if not row:
+    for val in rows:
+        if not val:
             continue
 
-        val = row.split(' ')[0]
         if val == update_by_col:
             continue
 
