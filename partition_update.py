@@ -75,7 +75,6 @@ def _load_src_tbl_names(tbl_name):
 def _real_main():
     tbl_name = 'product_ext'
     update_date = datetime.datetime.strptime('2014-12-05', '%Y-%m-%d')
-    update_date.strptime()
     update_hive_table(tbl_name, update_date)
     pass
 
