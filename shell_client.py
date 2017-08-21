@@ -6,7 +6,7 @@ import subprocess
 from logger import logger_mongodb_etl as logger
 
 
-class HiveExecutor():
+class LocalHiveExecutor():
     def __init__(self, stmt):
         self.stmt = stmt
 
