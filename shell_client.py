@@ -17,7 +17,7 @@ class LocalHiveExecutor():
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
         out, err = sp.communicate()
-        logger.debug(out)
+        #  logger.debug(out)
         logger.debug(err)
         rows = [row.strip() for row in out.split('\n')]
         return rows

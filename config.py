@@ -20,4 +20,7 @@ hive_config = {
     'database': 'mongodb',
 }
 
+src_db_name = 'commodity'
+dest_db_name = 'commodity'
+
 test_mode = True
