@@ -6,8 +6,9 @@ from shell_client import LocalHiveExecutor
 
 def _real_main():
     logger.debug('hello')
-    lhe = LocalHiveExecutor()
-    rows = lhe.execute('show tables from source')
+    stmt = 'show tables from source'
+    lhe = LocalHiveExecutor(stmt)
+    rows = lhe.execute()
     logger.debug(rows)
     pass
 
