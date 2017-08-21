@@ -62,12 +62,12 @@ def _get_after_day(curr_date, gap_days=1):
 def _load_updated_src_tbl_names(tbl_name, begin_date):
     begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     end_date_str = _get_after_day(begin_date)
-    tbl_names = _load_src_tbl_names(tbl_name)
+    src_tbl_names = _load_src_tbl_names(tbl_name)
     updated_src_tbls = list()
-    for stn in tbl_names:
+    for stn in src_tbl_names:
         query_stmt = (
             "SELECT DISTINCT 1 FROM %s.%s WHERE %s>='%s' and %s<='%s'") % (
-                src_db_name, tbl_name, update_by_col, begin_date_str,
+                src_db_name, stn, update_by_col, begin_date_str,
                 update_by_col, end_date_str)
         lhe = LocalHiveExecutor(query_stmt)
         rows = lhe.execute()
