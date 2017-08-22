@@ -14,8 +14,8 @@ partition_name = 'dt'
 
 def update_hive_table(tbl_name, begin_date):
     logger.debug('begin update')
-    dest_tbl_name = '%s_with_1_partition' % tbl_name
-    update_cols = _splice_table_cols('%s.%s' % (dest_db_name, dest_tbl_name))
+    dest_tbl_name = '%s.%s_with_1_partition' % (dest_db_name, tbl_name)
+    update_cols = _splice_table_cols(dest_tbl_name)
     update_src_tbl_names = _load_updated_src_tbl_info(tbl_name, begin_date)
 
     _clean_expired_partition(update_src_tbl_names)
@@ -24,7 +24,7 @@ def update_hive_table(tbl_name, begin_date):
             stn, dest_tbl_name, update_cols, pts)
 
 
-def _clean_expired_partition(partitions_in_tbl):
+def _clean_expired_partition(partitions_in_tbl, dest_tbl_name):
     partition_collector = dict()
     for _, pts in partitions_in_tbl.iteritems():
         for pt in pts:
@@ -32,7 +32,9 @@ def _clean_expired_partition(partitions_in_tbl):
 
     clean_pts = partition_collector.keys()
     for pt in clean_pts:
-        clean_stmt = "drop partition '%s'" % pt
+        clean_stmt = (
+            "ALTER TABLE %s DROP PARTITION (%s='%s')") % (
+                dest_tbl_name, partition_name, pt)
         lhe = LocalHiveExecutor(clean_stmt)
         lhe.execute()
 
@@ -105,10 +107,10 @@ def _update_hive(
     pts = ["'%s'" % pt for pt in partitions]
     pt_str = ', '.join(pts)
     update_stmt = (
-        "INSERT OVERWRITE TABLE %s.%s PARTITION (%s) "
+        "INSERT OVERWRITE TABLE %s PARTITION (%s) "
         "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
         "WHERE %s IN (%s)") % (
-            dest_db_name, dest_tbl_name, partition_name, update_cols,
+            dest_tbl_name, partition_name, update_cols,
             partition_col, partition_name, src_db_name, src_tbl_name,
             partition_col, pt_str)
     lhe = LocalHiveExecutor(update_stmt)
