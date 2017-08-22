@@ -18,7 +18,7 @@ def update_hive_table(tbl_name, begin_date):
     update_cols = _splice_table_cols(dest_tbl_name)
     update_src_tbl_names = _load_updated_src_tbl_info(tbl_name, begin_date)
 
-    _clean_expired_partition(update_src_tbl_names)
+    _clean_expired_partition(update_src_tbl_names, dest_tbl_name)
     for stn, pts in update_src_tbl_names.iteritems():
         _update_hive(
             stn, dest_tbl_name, update_cols, pts)

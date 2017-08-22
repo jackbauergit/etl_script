@@ -19,7 +19,7 @@ class LocalHiveExecutor():
         out, err = sp.communicate()
         #  logger.debug(out)
         logger.debug(err)
-        rows = [row.strip() for row in out.split('\n')]
+        rows = [row.strip() for row in out.split('\n') if row.strip()]
         return rows
 
 
