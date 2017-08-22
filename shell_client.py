@@ -4,6 +4,36 @@
 
 import subprocess
 from logger import logger_etl as logger
+from config import thrift_ip, thrift_port
+
+
+class LocalBeelineExecutor():
+    def __init__(self, stmt):
+        self.stmt = stmt
+
+    def execute(self):
+        quote_stmt = '''"%s"''' % self.stmt
+        url = "-ujdbc:hive2://%s:%s" % (thrift_ip, thrift_port)
+        cmd = ['$SPARK_HOME/bin/beeline', url, '-nroot', '-e', quote_stmt]
+        logger.debug(cmd)
+        sp = subprocess.Popen(
+            cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
+        out, err = sp.communicate()
+        #  logger.debug(out)
+        logger.debug(err)
+        return _clean_result(out)
+
+
+def _clean_result(raw_result):
+    rows = raw_result.split('\n')
+    clean_rows = list()
+    for row in rows:
+        row = row.strip()
+        if not row:
+            continue
+        clean_rows.append(row)
+
+    return clean_rows
 
 
 class LocalHiveExecutor():
@@ -19,8 +49,7 @@ class LocalHiveExecutor():
         out, err = sp.communicate()
         #  logger.debug(out)
         logger.debug(err)
-        rows = [row.strip() for row in out.split('\n') if row.strip()]
-        return rows
+        return _clean_result(out)
 
 
 class ShellExecutor():

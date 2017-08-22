@@ -20,8 +20,7 @@ def update_hive_table(tbl_name, begin_date):
 
     _clean_expired_partitions(update_src_tbl_names, dest_tbl_name)
     for stn, pts in update_src_tbl_names.iteritems():
-        _update_hive(
-            stn, dest_tbl_name, update_cols, pts)
+        _update_hive(stn, dest_tbl_name, update_cols, pts)
 
 
 def _clean_expired_partitions(partitions_in_tbl, dest_tbl_name):
