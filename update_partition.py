@@ -114,8 +114,8 @@ def _update_hive(
     #  pt_str = ', '.join(pts)
     for pt in partitions:
         update_stmt = (
-            "INSERT TABLE %s PARTITION (%s) "
-            "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
+            "INSERT INTO TABLE %s PARTITION (%s) "
+            "SELECT %s, substring(%s, 0, 10) as %s FROM %s.%s "
             "WHERE %s LIKE '%s%%'") % (
                 dest_tbl_name, partition_name, update_cols, partition_col,
                 partition_name, src_db_name, src_tbl_name,
