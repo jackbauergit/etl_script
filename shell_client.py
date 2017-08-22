@@ -26,7 +26,7 @@ class LocalBeelineExecutor():
         beeline_rows = _clean_result(out)
         result_collector = dict()
         for row in beeline_rows:
-            row = row.strip('-+ ')
+            row = row.strip('-+| ')
             result_collector[row] = 1
 
         return result_collector.keys()
