@@ -3,7 +3,7 @@
 import re
 import datetime
 from logger import logger_etl as logger
-from shell_client import LocalHiveExecutor
+from shell_client import LocalHiveExecutor as LocalExecutor
 from config import src_db_name, dest_db_name, test_mode
 
 
@@ -34,14 +34,14 @@ def _clean_expired_partitions(partitions_in_tbl, dest_tbl_name):
         clean_stmt = (
             "ALTER TABLE %s DROP PARTITION (%s='%s')") % (
                 dest_tbl_name, partition_name, pt)
-        lhe = LocalHiveExecutor(clean_stmt)
+        lhe = LocalExecutor(clean_stmt)
         result = lhe.execute()
         logger.debug(result)
 
 
 def _splice_table_cols(tbl_name):
     query_stmt = "SHOW COLUMNS FROM %s" % tbl_name
-    lhe = LocalHiveExecutor(query_stmt)
+    lhe = LocalExecutor(query_stmt)
     rows = lhe.execute()
     cols = list()
     tbl_filter = [partition_col, partition_name]
@@ -69,7 +69,7 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
                 partition_col, src_db_name, stn, update_by_col,
                 begin_date_str,
                 update_by_col, end_date_str)
-        lhe = LocalHiveExecutor(query_stmt)
+        lhe = LocalExecutor(query_stmt)
         rows = lhe.execute()
         logger.debug(rows)
 
@@ -89,7 +89,7 @@ def _load_src_tbl_names(tbl_name):
         return ['product_ext_with_no_partition']
 
     stmt = 'show tables from %s' % dest_db_name
-    lhe = LocalHiveExecutor(stmt)
+    lhe = LocalExecutor(stmt)
     rows = lhe.execute()
 
     pattern = tbl_name + r'(_\d+)?$'
@@ -114,7 +114,7 @@ def _update_hive(
                 dest_tbl_name, partition_name, update_cols, partition_col,
                 partition_name, src_db_name, src_tbl_name,
                 partition_col, pt)
-        lhe = LocalHiveExecutor(update_stmt)
+        lhe = LocalExecutor(update_stmt)
         result = lhe.execute()
         logger.debug(result)
 
