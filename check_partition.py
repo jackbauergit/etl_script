@@ -92,7 +92,7 @@ def _load_src_tbl_names(tbl_name):
     if test_mode:
         return ['product_ext_with_no_partition']
 
-    stmt = 'show tables from %s' % dest_db_name
+    stmt = 'show tables from %s' % src_db_name
     lhe = _get_executor(stmt)
     rows = lhe.execute()
 
