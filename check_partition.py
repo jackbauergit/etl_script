@@ -99,7 +99,11 @@ def _load_src_tbl_names(tbl_name):
     pattern = tbl_name + r'(_\d+)?$'
 
     logger.debug(pattern)
-    releated_tbl_names = [tn for tn in rows if re.search(pattern, tn)]
+    releated_tbl_names = list()
+    for tn in rows:
+        if re.search(pattern, tn):
+            releated_tbl_names.append(tn)
+
     logger.debug(releated_tbl_names)
     return releated_tbl_names
 
