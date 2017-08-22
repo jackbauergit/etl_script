@@ -21,7 +21,7 @@ class LocalBeelineExecutor():
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
         out, err = sp.communicate()
-        #  logger.debug(out)
+        logger.debug(out)
         logger.debug(err)
         beeline_rows = _clean_result(out)
         result_collector = dict()
