@@ -23,8 +23,12 @@ def update_hive_table(tbl_name, begin_date):
         for pt in pts:
             partition_collector[pt] = 1
     all_partitions = partition_collector.keys()
-    logger.debug(u'表 %s 需要更新 %s 个分区: %s' % (
-        tbl_name, len(all_partitions), all_partitions))
+    all_partitions.sort()
+    if not all_partitions:
+        return
+
+    logger.debug(u'表 %s 需要更新 %s 个分区，时间跨度从 %s 到 %s' % (
+        tbl_name, len(all_partitions), all_partitions[0], all_partitions[-1]))
 
 
 def _splice_table_cols(tbl_name):
