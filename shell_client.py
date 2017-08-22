@@ -23,7 +23,13 @@ class LocalBeelineExecutor():
         out, err = sp.communicate()
         #  logger.debug(out)
         logger.debug(err)
-        return _clean_result(out)
+        beeline_rows = _clean_result(out)
+        result_collector = dict()
+        for row in beeline_rows:
+            row = row.strip('-+ ')
+            result_collector[row] = 1
+
+        return result_collector.keys()
 
 
 def _clean_result(raw_result):
