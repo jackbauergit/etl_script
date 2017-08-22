@@ -100,7 +100,9 @@ def _load_src_tbl_names(tbl_name):
 
     logger.debug(pattern)
     releated_tbl_names = list()
-    for tn in rows:
+    for row in rows:
+        tn = row.split('|')[1]
+        tn = tn.strip()
         if re.search(pattern, tn):
             releated_tbl_names.append(tn)
 
