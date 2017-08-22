@@ -46,7 +46,7 @@ def _splice_table_cols(tbl_name):
     lhe = LocalExecutor(query_stmt)
     rows = lhe.execute()
     cols = list()
-    tbl_filter = [partition_col, partition_name]
+    tbl_filter = [partition_name]
     for val in rows:
         if not val:
             continue
