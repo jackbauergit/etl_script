@@ -5,19 +5,23 @@
 import subprocess
 import os
 from logger import logger_etl as logger
-from config import thrift_ip, thrift_port
+from config import thrift_ip, thrift_port, thrift_user
 
 
 class LocalBeelineExecutor():
-    def __init__(self, stmt):
+    def __init__(
+            self, stmt, ip=thrift_ip, port=thrift_port, user=thrift_user):
         self.stmt = stmt
+        self.ip = ip
+        self.port = port
+        self.user = user
 
     def execute(self):
         quote_stmt = '''"%s"''' % self.stmt
-        url = "-ujdbc:hive2://%s:%s" % (thrift_ip, thrift_port)
+        url = "-ujdbc:hive2://%s:%s" % (self.ip, self.port)
         beeline_cmd = "%s/bin/beeline" % os.environ.get('SPARK_HOME')
         cmd = [
-            beeline_cmd, url, '-nhadp', '--showHeader=false',
+            beeline_cmd, url, '-n%s' % self.user, '--showHeader=false',
             '-e', quote_stmt]
         logger.debug(cmd)
         sp = subprocess.Popen(

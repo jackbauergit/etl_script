@@ -4,14 +4,21 @@ import re
 import datetime
 from logger import logger_etl as logger
 from collections import OrderedDict
-#  from shell_client import LocalHiveExecutor as LocalExecutor
 from shell_client import LocalBeelineExecutor as LocalExecutor
-from config import src_db_name, dest_db_name, test_mode
+from config import src_db_name, dest_db_name
 
 
 update_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
+test_mode = False
+
+
+def _get_executor(stmt):
+    thrift_ip = '10.189.245.201'
+    thrift_port = 10000
+    thrift_user = 'root'
+    return LocalExecutor(stmt, thrift_ip, thrift_port, thrift_user)
 
 
 def update_hive_table(tbl_name, begin_date):
@@ -33,7 +40,7 @@ def update_hive_table(tbl_name, begin_date):
 
 def _splice_table_cols(tbl_name):
     query_stmt = "SHOW COLUMNS FROM %s" % tbl_name
-    lhe = LocalExecutor(query_stmt)
+    lhe = _get_executor(query_stmt)
     rows = lhe.execute()
     cols = list()
     tbl_filter = [partition_name]
@@ -61,7 +68,7 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
                 partition_col, partition_col, src_db_name, stn,
                 update_by_col, begin_date_str,
                 update_by_col, end_date_str)
-        lhe = LocalExecutor(query_stmt)
+        lhe = _get_executor(query_stmt)
         rows = lhe.execute()
         logger.debug(rows)
 
@@ -85,7 +92,7 @@ def _load_src_tbl_names(tbl_name):
         return ['product_ext_with_no_partition']
 
     stmt = 'show tables from %s' % dest_db_name
-    lhe = LocalExecutor(stmt)
+    lhe = _get_executor(stmt)
     rows = lhe.execute()
 
     pattern = tbl_name + r'(_\d+)?$'
@@ -103,9 +110,10 @@ def _get_after_day(curr_date, gap_days=1):
 
 def _real_main():
     tbl_name = 'product_ext'
-    update_date = datetime.datetime.strptime('2014-12-05', '%Y-%m-%d')
+    check_date = '2014-12-05'
+
+    update_date = datetime.datetime.strptime(check_date, '%Y-%m-%d')
     update_hive_table(tbl_name, update_date)
-    pass
 
 
 if __name__ == '__main__':

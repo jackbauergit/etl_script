@@ -24,5 +24,6 @@ src_db_name = 'commodity'
 dest_db_name = 'commodity'
 thrift_ip = '127.0.0.1'
 thrift_port = 10000
+thrift_user = 'hadp'
 
 test_mode = True
