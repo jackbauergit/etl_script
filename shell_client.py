@@ -3,6 +3,7 @@
 
 
 import subprocess
+import os
 from logger import logger_etl as logger
 from config import thrift_ip, thrift_port
 
@@ -14,7 +15,8 @@ class LocalBeelineExecutor():
     def execute(self):
         quote_stmt = '''"%s"''' % self.stmt
         url = "-ujdbc:hive2://%s:%s" % (thrift_ip, thrift_port)
-        cmd = ['$SPARK_HOME/bin/beeline', url, '-nroot', '-e', quote_stmt]
+        beeline_cmd = "%s/bin/beeline" % os.environ.get('SPARK_HOME')
+        cmd = [beeline_cmd, url, '-nroot', '-e', quote_stmt]
         logger.debug(cmd)
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
