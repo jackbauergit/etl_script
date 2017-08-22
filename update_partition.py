@@ -36,7 +36,8 @@ def _clean_expired_partition(partitions_in_tbl, dest_tbl_name):
             "ALTER TABLE %s DROP PARTITION (%s='%s')") % (
                 dest_tbl_name, partition_name, pt)
         lhe = LocalHiveExecutor(clean_stmt)
-        lhe.execute()
+        result = lhe.execute()
+        logger.debug(result)
 
 
 def _splice_table_cols(tbl_name):
@@ -114,7 +115,8 @@ def _update_hive(
             partition_col, partition_name, src_db_name, src_tbl_name,
             partition_col, pt_str)
     lhe = LocalHiveExecutor(update_stmt)
-    lhe.execute()
+    result = lhe.execute()
+    logger.debug(result)
     pass
 
 
