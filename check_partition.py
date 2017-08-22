@@ -5,9 +5,10 @@ import datetime
 from logger import logger_etl as logger
 from collections import OrderedDict
 from shell_client import LocalBeelineExecutor as LocalExecutor
-from config import src_db_name, dest_db_name
 
 
+src_db_name = 'modified'
+dest_db_name = 'modified'
 update_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
