@@ -3,6 +3,7 @@
 import re
 import datetime
 from logger import logger_etl as logger
+from collections import OrderedDict
 #  from shell_client import LocalHiveExecutor as LocalExecutor
 from shell_client import LocalBeelineExecutor as LocalExecutor
 from config import src_db_name, dest_db_name, test_mode
@@ -25,7 +26,7 @@ def update_hive_table(tbl_name, begin_date):
 
 
 def _clean_expired_partitions(partitions_in_tbl, dest_tbl_name):
-    partition_collector = dict()
+    partition_collector = OrderedDict()
     for _, pts in partitions_in_tbl.iteritems():
         for pt in pts:
             partition_collector[pt] = 1
@@ -62,7 +63,7 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
     begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     end_date_str = _get_after_day(begin_date)
     src_tbl_names = _load_src_tbl_names(tbl_name)
-    need_update_partitions = dict()
+    need_update_partitions = OrderedDict()
     for stn in src_tbl_names:
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
@@ -76,6 +77,8 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
 
         if rows:
             partitions = need_update_partitions.get(stn, {})
+            if not partitions:
+                partitions = OrderedDict()
             for val in rows:
                 if partition_name in val:
                     continue

@@ -16,7 +16,9 @@ class LocalBeelineExecutor():
         quote_stmt = '''"%s"''' % self.stmt
         url = "-ujdbc:hive2://%s:%s" % (thrift_ip, thrift_port)
         beeline_cmd = "%s/bin/beeline" % os.environ.get('SPARK_HOME')
-        cmd = [beeline_cmd, url, '-nhadp', '-e', quote_stmt]
+        cmd = [
+            beeline_cmd, url, '-nhadp', '--showHeader=false',
+            '-e', quote_stmt]
         logger.debug(cmd)
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
