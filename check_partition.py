@@ -7,8 +7,8 @@ from collections import OrderedDict
 from shell_client import LocalBeelineExecutor as LocalExecutor
 
 
-src_db_name = 'modified'
-dest_db_name = 'modified'
+src_db_name = 'mysql'
+dest_db_name = 'commodity'
 update_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
