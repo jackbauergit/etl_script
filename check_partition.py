@@ -110,8 +110,8 @@ def _get_after_day(curr_date, gap_days=1):
 
 
 def _real_main():
-    tbl_name = 'product_ext'
-    check_date = '2014-12-05'
+    tbl_name = 'product'
+    check_date = '2017-08-21'
 
     update_date = datetime.datetime.strptime(check_date, '%Y-%m-%d')
     update_hive_table(tbl_name, update_date)
