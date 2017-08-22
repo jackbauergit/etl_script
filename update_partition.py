@@ -18,13 +18,13 @@ def update_hive_table(tbl_name, begin_date):
     update_cols = _splice_table_cols(dest_tbl_name)
     update_src_tbl_names = _load_updated_src_tbl_info(tbl_name, begin_date)
 
-    _clean_expired_partition(update_src_tbl_names, dest_tbl_name)
+    _clean_expired_partitions(update_src_tbl_names, dest_tbl_name)
     for stn, pts in update_src_tbl_names.iteritems():
         _update_hive(
             stn, dest_tbl_name, update_cols, pts)
 
 
-def _clean_expired_partition(partitions_in_tbl, dest_tbl_name):
+def _clean_expired_partitions(partitions_in_tbl, dest_tbl_name):
     partition_collector = dict()
     for _, pts in partitions_in_tbl.iteritems():
         for pt in pts:
@@ -105,19 +105,19 @@ def _update_hive(
         src_tbl_name, dest_tbl_name, update_cols, partitions, gap_days=1):
     #  begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     #  end_date_str = _get_after_day(begin_date, gap_days)
-    pts = ["'%s'" % pt for pt in partitions]
-    pt_str = ', '.join(pts)
-    update_stmt = (
-        "INSERT OVERWRITE TABLE %s PARTITION (%s) "
-        "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
-        "WHERE %s IN (%s)") % (
-            dest_tbl_name, partition_name, update_cols,
-            partition_col, partition_name, src_db_name, src_tbl_name,
-            partition_col, pt_str)
-    lhe = LocalHiveExecutor(update_stmt)
-    result = lhe.execute()
-    logger.debug(result)
-    pass
+    #  pts = ["'%s'" % pt for pt in partitions]
+    #  pt_str = ', '.join(pts)
+    for pt in partitions:
+        update_stmt = (
+            "INSERT TABLE %s PARTITION (%s) "
+            "SELECT %s, substring(%s, 0, 10) as %s from %s.%s "
+            "WHERE %s LIKE '%s%%'") % (
+                dest_tbl_name, partition_name, update_cols, partition_col,
+                partition_name, src_db_name, src_tbl_name,
+                partition_col, pt)
+        lhe = LocalHiveExecutor(update_stmt)
+        result = lhe.execute()
+        logger.debug(result)
 
 
 def _get_after_day(curr_date, gap_days=1):
