@@ -65,10 +65,10 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
     need_update_partitions = dict()
     for stn in src_tbl_names:
         query_stmt = (
-            "SELECT DISTINCT substring(%s, 0, 10) FROM %s.%s "
+            "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
-                partition_col, src_db_name, stn, update_by_col,
-                begin_date_str,
+                partition_col, partition_col, src_db_name, stn,
+                update_by_col, begin_date_str,
                 update_by_col, end_date_str)
         lhe = LocalExecutor(query_stmt)
         rows = lhe.execute()
@@ -76,8 +76,10 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
 
         if rows:
             partitions = need_update_partitions.get(stn, {})
-            for pt in rows:
-                partitions[pt] = 1
+            for val in rows:
+                if partition_name in val:
+                    continue
+                partitions[val] = 1
 
             need_update_partitions[stn] = partitions
 

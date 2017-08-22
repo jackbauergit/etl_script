@@ -27,6 +27,9 @@ class LocalBeelineExecutor():
         result_collector = dict()
         for row in beeline_rows:
             row = row.strip('-+| ')
+            if not row:
+                continue
+
             result_collector[row] = 1
 
         return result_collector.keys()
