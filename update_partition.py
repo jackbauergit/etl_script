@@ -3,7 +3,8 @@
 import re
 import datetime
 from logger import logger_etl as logger
-from shell_client import LocalHiveExecutor as LocalExecutor
+#  from shell_client import LocalHiveExecutor as LocalExecutor
+from shell_client import LocalBeelineExecutor as LocalExecutor
 from config import src_db_name, dest_db_name, test_mode
 
 
