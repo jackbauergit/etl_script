@@ -9,7 +9,7 @@ from shell_client import LocalBeelineExecutor as LocalExecutor
 
 src_db_name = 'mysql'
 dest_db_name = 'commodity'
-update_by_col = 'modified'
+check_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
 test_mode = False
@@ -22,14 +22,15 @@ def _get_executor(stmt):
     return LocalExecutor(stmt, thrift_ip, thrift_port, thrift_user)
 
 
-def update_hive_table(tbl_name, begin_date):
-    logger.debug('begin update')
-    update_src_tbl_names = _load_updated_src_tbl_info(tbl_name, begin_date)
+def check_hive_table(tbl_name, begin_date):
+    logger.debug('begin check')
+    check_src_tbl_names = _load_checkd_src_tbl_info(tbl_name, begin_date)
 
     partition_collector = OrderedDict()
-    for _, pts in update_src_tbl_names.iteritems():
+    for _, pts in check_src_tbl_names.iteritems():
         for pt in pts:
             partition_collector[pt] = 1
+    logger.debug(partition_collector)
     all_partitions = partition_collector.keys()
     all_partitions.sort()
     if not all_partitions:
@@ -57,24 +58,24 @@ def _splice_table_cols(tbl_name):
     return ', '.join(cols)
 
 
-def _load_updated_src_tbl_info(tbl_name, begin_date):
+def _load_checkd_src_tbl_info(tbl_name, begin_date):
     begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     end_date_str = _get_after_day(begin_date)
     src_tbl_names = _load_src_tbl_names(tbl_name)
-    need_update_partitions = OrderedDict()
+    need_check_partitions = OrderedDict()
     for stn in src_tbl_names:
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
                 partition_col, partition_col, src_db_name, stn,
-                update_by_col, begin_date_str,
-                update_by_col, end_date_str)
+                check_by_col, begin_date_str,
+                check_by_col, end_date_str)
         lhe = _get_executor(query_stmt)
         rows = lhe.execute()
         logger.debug(rows)
 
         if rows:
-            partitions = need_update_partitions.get(stn, {})
+            partitions = need_check_partitions.get(stn, {})
             if not partitions:
                 partitions = OrderedDict()
             for val in rows:
@@ -82,9 +83,9 @@ def _load_updated_src_tbl_info(tbl_name, begin_date):
                     continue
                 partitions[val] = 1
 
-            need_update_partitions[stn] = partitions
+            need_check_partitions[stn] = partitions
 
-    return need_update_partitions
+    return need_check_partitions
 
 
 def _load_src_tbl_names(tbl_name):
@@ -119,8 +120,8 @@ def _real_main():
     tbl_name = 'product'
     check_date = '2017-08-21'
 
-    update_date = datetime.datetime.strptime(check_date, '%Y-%m-%d')
-    update_hive_table(tbl_name, update_date)
+    check_date = datetime.datetime.strptime(check_date, '%Y-%m-%d')
+    check_hive_table(tbl_name, check_date)
 
 
 if __name__ == '__main__':
