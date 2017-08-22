@@ -22,5 +22,7 @@ hive_config = {
 
 src_db_name = 'commodity'
 dest_db_name = 'commodity'
+thrift_ip = '127.0.0.1'
+thrift_port = 10000
 
 test_mode = True
