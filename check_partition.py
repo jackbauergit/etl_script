@@ -2,6 +2,7 @@
 
 import re
 import datetime
+import threading
 from logger import logger_etl as logger
 from collections import OrderedDict
 from shell_client import LocalBeelineExecutor as LocalExecutor
@@ -13,6 +14,7 @@ check_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
 test_mode = False
+max_concurrency_num = 10
 
 
 def _get_executor(stmt):
@@ -25,12 +27,15 @@ def _get_executor(stmt):
 def check_hive_table(tbl_name, begin_date):
     logger.debug('begin check')
     check_src_tbl_names = _load_checkd_src_tbl_info(tbl_name, begin_date)
+    logger.debug(u'表 %s 更新了 %d 个分表: %s' % (
+        tbl_name, len(check_src_tbl_names), check_src_tbl_names.keys()))
 
+    logger.debug(check_src_tbl_names)
     partition_collector = OrderedDict()
     for _, pts in check_src_tbl_names.iteritems():
         for pt in pts:
             partition_collector[pt] = 1
-    logger.debug(partition_collector)
+
     all_partitions = partition_collector.keys()
     all_partitions.sort()
     if not all_partitions:
@@ -58,11 +63,41 @@ def _splice_table_cols(tbl_name):
     return ', '.join(cols)
 
 
+class QueryTask(threading.Thread):
+    def __init__(self, stmt, semaphore):
+        threading.Thread.__init__(self)
+        self.stmt = stmt
+        self.semaphore = semaphore
+        self.result = list()
+
+    def run(self):
+        try:
+            self.real_exec()
+
+        except Exception as e:
+            logger.error(e, exc_info=True)
+
+        finally:
+            self.semaphore.release()
+
+    def real_exec(self):
+        lhe = _get_executor(self.stmt)
+        self.result = lhe.execute()
+
+    def get_result(self):
+        return self.result
+
+
 def _load_checkd_src_tbl_info(tbl_name, begin_date):
     begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     end_date_str = _get_after_day(begin_date)
     src_tbl_names = _load_src_tbl_names(tbl_name)
+    logger.debug(u'和表 %s 相关的分表总共有 %s 个' % (
+        tbl_name, len(src_tbl_names)))
     need_check_partitions = OrderedDict()
+    semaphore = threading.Semaphore(max_concurrency_num)
+
+    work_threads = list()
     for stn in src_tbl_names:
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
@@ -70,8 +105,12 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
                 partition_col, partition_col, src_db_name, stn,
                 check_by_col, begin_date_str,
                 check_by_col, end_date_str)
-        lhe = _get_executor(query_stmt)
-        rows = lhe.execute()
+        qt = QueryTask(query_stmt, semaphore)
+        qt.start()
+
+    for wt in work_threads:
+        wt.join()
+        rows = wt.get_result()
         logger.debug(rows)
 
         if rows:
