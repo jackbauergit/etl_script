@@ -4,7 +4,7 @@
 
 import subprocess
 #  import os
-from logger import logger_etl as logger
+#  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
 
 
@@ -28,12 +28,12 @@ class LocalBeelineExecutor():
             '--showHeader=false',
             '--showWarnings=false',
             '-e', quote_stmt]
-        logger.debug(cmd)
+        print(cmd)
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
         out, err = sp.communicate()
-        logger.debug(out)
-        logger.debug(err)
+        print(out)
+        print(err)
         beeline_rows = _clean_result(out)
         result_collector = dict()
         for row in beeline_rows:
@@ -65,12 +65,12 @@ class LocalHiveExecutor():
     def execute(self):
         quote_stmt = '''"%s"''' % self.stmt
         cmd = ['hive', '-S', '-e', quote_stmt]
-        logger.debug(cmd)
+        print(cmd)
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
         out, err = sp.communicate()
-        #  logger.debug(out)
-        logger.debug(err)
+        #  print(out)
+        print(err)
         return _clean_result(out)
 
 
@@ -79,13 +79,13 @@ class ShellExecutor():
         self.stmt = stmt
 
     def execute(self):
-        logger.debug(self.stmt)
+        print(self.stmt)
         sp = subprocess.Popen(
             self.stmt, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
             shell=False)
         out, err = sp.communicate()
-        logger.debug(out)
-        logger.debug(err)
+        print(out)
+        print(err)
         if out:
             out = out.strip()
         if err:
