@@ -112,17 +112,20 @@ def _update_hive(
     #  end_date_str = _get_after_day(begin_date, gap_days)
     #  pts = ["'%s'" % pt for pt in partitions]
     #  pt_str = ', '.join(pts)
+    query_pts = list()
     for pt in partitions:
-        update_stmt = (
-            "INSERT INTO TABLE %s PARTITION (%s) "
-            "SELECT %s, substring(%s, 0, 10) as %s FROM %s.%s "
-            "WHERE %s LIKE '%s%%'") % (
-                dest_tbl_name, partition_name, update_cols, partition_col,
-                partition_name, src_db_name, src_tbl_name,
-                partition_col, pt)
-        lhe = LocalExecutor(update_stmt)
-        result = lhe.execute()
-        logger.debug(result)
+        query_pts.append("(%s LIKE '%s%%')" % (partition_col, pt))
+    query_info = ' OR '.join(query_pts)
+
+    update_stmt = (
+        "INSERT INTO TABLE %s PARTITION (%s) "
+        "SELECT %s, substring(%s, 0, 10) as %s FROM %s.%s "
+        "WHERE %s") % (
+            dest_tbl_name, partition_name, update_cols, partition_col,
+            partition_name, src_db_name, src_tbl_name, query_info)
+    lhe = LocalExecutor(update_stmt)
+    result = lhe.execute()
+    logger.debug(result)
 
 
 def _get_after_day(curr_date, gap_days=1):
