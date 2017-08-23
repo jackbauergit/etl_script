@@ -14,7 +14,7 @@ check_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
 test_mode = False
-max_concurrency_num = 2
+max_concurrency_num = 10
 
 
 def _get_executor(stmt):
@@ -99,6 +99,7 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
 
     work_threads = list()
     for stn in src_tbl_names:
+        semaphore.acquire()
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
