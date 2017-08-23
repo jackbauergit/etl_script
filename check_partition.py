@@ -14,7 +14,7 @@ check_by_col = 'modified'
 partition_col = 'created'
 partition_name = 'dt'
 test_mode = False
-max_concurrency_num = 20
+max_concurrency_num = 2
 
 
 def _get_executor(stmt):
