@@ -96,24 +96,27 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
     print src_tbl_names
     print('和表 %s 相关的分表总共有 %d 个' % (tbl_name, len(src_tbl_names)))
     need_check_partitions = OrderedDict()
-    semaphore = threading.Semaphore(max_concurrency_num)
+    #  semaphore = threading.Semaphore(max_concurrency_num)
 
-    work_threads = list()
+    #  work_threads = list()
     for stn in src_tbl_names:
-        semaphore.acquire()
+        #  semaphore.acquire()
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
                 partition_col, partition_col, src_db_name, stn,
                 check_by_col, begin_date_str,
                 check_by_col, end_date_str)
-        qt = QueryTask(query_stmt, semaphore)
-        qt.start()
+        #  qt = QueryTask(query_stmt, semaphore)
+        #  qt.start()
+        #  self.result = lhe.execute()
+        lhe = _get_executor(query_stmt)
+        rows = lhe.execute()
 
-    for wt in work_threads:
-        wt.join()
-        rows = wt.get_result()
-        print(rows)
+        #  for wt in work_threads:
+        #  wt.join()
+        #  rows = wt.get_result()
+        #  print(rows)
 
         if rows:
             partitions = need_check_partitions.get(stn, {})
