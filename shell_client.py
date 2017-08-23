@@ -3,9 +3,12 @@
 
 
 import subprocess
-import os
+#  import os
 from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
+
+
+spark_home = '/software/servers/spark-2.2.0-SNAPSHOT-bin-hadoop-2.6.1'
 
 
 class LocalBeelineExecutor():
@@ -19,7 +22,7 @@ class LocalBeelineExecutor():
     def execute(self):
         quote_stmt = '''"%s"''' % self.stmt
         url = "-ujdbc:hive2://%s:%s" % (self.ip, self.port)
-        beeline_cmd = "%s/bin/beeline" % os.environ.get('SPARK_HOME')
+        beeline_cmd = "%s/bin/beeline" % spark_home
         cmd = [
             beeline_cmd, url, '-n%s' % self.user,
             '--showHeader=false',
