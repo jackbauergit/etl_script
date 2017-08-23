@@ -92,6 +92,8 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
     begin_date_str = begin_date.strftime('%Y-%m-%d %H:%M:%S')
     end_date_str = _get_after_day(begin_date)
     src_tbl_names = _load_src_tbl_names(tbl_name)
+    print tbl_name
+    print src_tbl_names
     print(u'和表 %s 相关的分表总共有 %d 个' % (tbl_name, len(src_tbl_names)))
     need_check_partitions = OrderedDict()
     semaphore = threading.Semaphore(max_concurrency_num)
