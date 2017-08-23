@@ -26,7 +26,7 @@ def _get_executor(stmt):
 def check_hive_table(tbl_name, begin_date):
     print('begin check')
     check_src_tbl_names = _load_checkd_src_tbl_info(tbl_name, begin_date)
-    print(u'表 %s 更新了 %d 个分表: %s' % (
+    print('表 %s 更新了 %d 个分表: %s' % (
         tbl_name, len(check_src_tbl_names), check_src_tbl_names.keys()))
 
     print(check_src_tbl_names)
@@ -40,7 +40,7 @@ def check_hive_table(tbl_name, begin_date):
     if not all_partitions:
         return
 
-    print(u'表 %s 需要更新 %s 个分区，时间跨度从 %s 到 %s' % (
+    print('表 %s 需要更新 %s 个分区，时间跨度从 %s 到 %s' % (
         tbl_name, len(all_partitions), all_partitions[0], all_partitions[-1]))
 
 
@@ -94,7 +94,7 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
     src_tbl_names = _load_src_tbl_names(tbl_name)
     print tbl_name
     print src_tbl_names
-    print(u'和表 %s 相关的分表总共有 %d 个' % (tbl_name, len(src_tbl_names)))
+    print('和表 %s 相关的分表总共有 %d 个' % (tbl_name, len(src_tbl_names)))
     need_check_partitions = OrderedDict()
     semaphore = threading.Semaphore(max_concurrency_num)
 
