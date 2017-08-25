@@ -5,6 +5,7 @@
 import subprocess
 #  import commands
 import popen2
+import time
 #  import os
 #  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
@@ -63,6 +64,7 @@ class LocalBeelineExecutor():
         #  print(out)
         #  print(status)
         #  beeline_rows = _clean_result(out)
+        time.sleep(1)
         beeline_rows = [
             '|172_28_36_89__product_pop_12_4__product_12',
             '|172_28_36_89__product_pop_12_4__product_12',
