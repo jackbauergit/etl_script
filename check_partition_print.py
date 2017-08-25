@@ -99,16 +99,20 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
     semaphore = multiprocessing.Semaphore(max_concurrency_num)
 
     work_threads = list()
+    test_count = 0
     for stn in src_tbl_names:
         semaphore.acquire()
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
                 partition_col, partition_col, src_db_name, stn,
-                check_by_col, begin_date_str,
-                check_by_col, end_date_str)
+                check_by_col, begin_date_str, check_by_col, end_date_str)
         qt = QueryTask(query_stmt, semaphore)
         qt.start()
+
+        test_count = test_count + 1
+        if test_count >= max_concurrency_num:
+            break
         #  lhe = _get_executor(query_stmt)
         #  rows = lhe.execute()
 
