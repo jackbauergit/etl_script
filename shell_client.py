@@ -8,7 +8,7 @@ import subprocess
 from config import thrift_ip, thrift_port, thrift_user
 
 
-spark_home = '/software/servers/spark-2.2.0-SNAPSHOT-bin-hadoop-2.6.1'
+spark_home = '/export/servers/spark-2.2.0-bin-hadoop2.6'
 
 
 class LocalBeelineExecutor():
