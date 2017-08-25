@@ -66,11 +66,12 @@ class LocalHiveExecutor():
         quote_stmt = '''"%s"''' % self.stmt
         cmd = ['hive', '-S', '-e', quote_stmt]
         print(cmd)
-        sp = subprocess.Popen(
-            cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
-        out, err = sp.communicate()
+        #  sp = subprocess.Popen(
+        #  cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
+        #  out, err = sp.communicate()
         #  print(out)
-        print(err)
+        #  print(err)
+        out = ""
         return _clean_result(out)
 
 
