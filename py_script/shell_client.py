@@ -166,13 +166,13 @@ class LocalBeelineExecutor():
             '172_28_36_89__product_pop_12_4__product_12',
             '172_28_36_89__product_pop_12_4__product_12',
             ]
-        result_collector = dict()
-        for row in beeline_rows:
-            row = row.strip('-+| ')
-            if not row:
-                continue
+        #  result_collector = dict()
+        #  for row in beeline_rows:
+        #  row = row.strip('-+| ')
+        #  if not row:
+        #  continue
 
-            result_collector[row] = 1
+        #  result_collector[row] = 1
 
         #  return result_collector.keys()
         return beeline_rows
