@@ -30,9 +30,10 @@ class LocalBeelineExecutor():
             '--showWarnings=false',
             '-e', quote_stmt]
         print(cmd)
-        sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
-        out, err = sp.communicate()
+        #  sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
+        #  out, err = sp.communicate()
 
+        out = subprocess.check_output(cmd, stderr=None)
         #  pout, pin, perr = popen2.popen3(cmd)
         #  err = perr.readlines()
         #  beeline_rows = pout.readlines()
@@ -41,8 +42,8 @@ class LocalBeelineExecutor():
         #  perr.close()
         #  out = ''
         #  err = ''
+        #  print(err)
         print(out)
-        print(err)
         beeline_rows = _clean_result(out)
         result_collector = dict()
         for row in beeline_rows:
