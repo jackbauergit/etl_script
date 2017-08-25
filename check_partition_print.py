@@ -2,7 +2,7 @@
 
 import re
 import datetime
-import threading
+import multiprocessing
 from collections import OrderedDict
 from shell_client import LocalBeelineExecutor as LocalExecutor
 
@@ -62,9 +62,9 @@ def _splice_table_cols(tbl_name):
     return ', '.join(cols)
 
 
-class QueryTask(threading.Thread):
+class QueryTask(multiprocessing.Process):
     def __init__(self, stmt, semaphore):
-        threading.Thread.__init__(self)
+        multiprocessing.Process.__init__(self)
         self.stmt = stmt
         self.semaphore = semaphore
         self.result = list()
@@ -96,27 +96,26 @@ def _load_checkd_src_tbl_info(tbl_name, begin_date):
     print src_tbl_names
     print('和表 %s 相关的分表总共有 %d 个' % (tbl_name, len(src_tbl_names)))
     need_check_partitions = OrderedDict()
-    #  semaphore = threading.Semaphore(max_concurrency_num)
+    semaphore = multiprocessing.Semaphore(max_concurrency_num)
 
-    #  work_threads = list()
+    work_threads = list()
     for stn in src_tbl_names:
-        #  semaphore.acquire()
+        semaphore.acquire()
         query_stmt = (
             "SELECT DISTINCT substring(%s, 0, 10) AS %s FROM %s.%s "
             "WHERE %s>='%s' and %s<='%s'") % (
                 partition_col, partition_col, src_db_name, stn,
                 check_by_col, begin_date_str,
                 check_by_col, end_date_str)
-        #  qt = QueryTask(query_stmt, semaphore)
-        #  qt.start()
-        #  self.result = lhe.execute()
-        lhe = _get_executor(query_stmt)
-        rows = lhe.execute()
+        qt = QueryTask(query_stmt, semaphore)
+        qt.start()
+        #  lhe = _get_executor(query_stmt)
+        #  rows = lhe.execute()
 
-        #  for wt in work_threads:
-        #  wt.join()
-        #  rows = wt.get_result()
-        #  print(rows)
+    for wt in work_threads:
+        wt.join()
+        rows = wt.get_result()
+        print(rows)
 
         if rows:
             partitions = need_check_partitions.get(stn, {})
@@ -162,7 +161,7 @@ def _get_after_day(curr_date, gap_days=1):
 
 def _real_main():
     tbl_name = 'product'
-    check_date = '2017-08-21'
+    check_date = '2017-08-23'
 
     check_date = datetime.datetime.strptime(check_date, '%Y-%m-%d')
     check_hive_table(tbl_name, check_date)
