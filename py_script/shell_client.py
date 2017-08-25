@@ -3,6 +3,7 @@
 
 
 import subprocess
+import commands
 #  import popen2
 #  import os
 #  from logger import logger_etl as logger
@@ -33,7 +34,8 @@ class LocalBeelineExecutor():
         #  sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
         #  out, err = sp.communicate()
 
-        out = subprocess.check_output(cmd, stderr=None)
+        #  out = subprocess.check_output(cmd, stderr=None)
+        status, out = commands.getstatusoutput(''.join(cmd))
         #  pout, pin, perr = popen2.popen3(cmd)
         #  err = perr.readlines()
         #  beeline_rows = pout.readlines()
@@ -44,6 +46,7 @@ class LocalBeelineExecutor():
         #  err = ''
         #  print(err)
         print(out)
+        print(status)
         beeline_rows = _clean_result(out)
         result_collector = dict()
         for row in beeline_rows:
