@@ -30,8 +30,9 @@ class LocalBeelineExecutor():
             '--showHeader=false',
             '--showWarnings=false',
             '-e', quote_stmt]
+        cmd = ' '.join(cmd)
         print(cmd)
-        pipe = popen2.Popen3(' '.join(cmd), True)
+        pipe = popen2.Popen3(cmd, True)
         to_child = pipe.tochild
         from_child = pipe.fromchild
         child_err = pipe.childerr
