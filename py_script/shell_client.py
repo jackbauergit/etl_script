@@ -3,8 +3,8 @@
 
 
 import subprocess
-import commands
-#  import popen2
+#  import commands
+import popen2
 #  import os
 #  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
@@ -31,11 +31,25 @@ class LocalBeelineExecutor():
             '--showWarnings=false',
             '-e', quote_stmt]
         print(cmd)
+        pipe = popen2.Popen3(' '.join(cmd), True)
+        to_child = pipe.tochild
+        from_child = pipe.fromchild
+        child_err = pipe.childerr
+        #  if data:
+        #  to_child.write(data)
+        to_child.close()
+        out = err = ''
+        while pipe.poll() is None:
+            out += from_child.read()
+            err += child_err.read()
+        out += from_child.read()
+        err += child_err.read()
+        status = pipe.wait()
         #  sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
         #  out, err = sp.communicate()
 
         #  out = subprocess.check_output(cmd, stderr=None)
-        status, out = commands.getstatusoutput(''.join(cmd))
+        #  status, out = commands.getstatusoutput(''.join(cmd))
         #  pout, pin, perr = popen2.popen3(cmd)
         #  err = perr.readlines()
         #  beeline_rows = pout.readlines()
