@@ -3,10 +3,6 @@
 
 
 import subprocess
-#  import commands
-import popen2
-import time
-#  import os
 #  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
 
@@ -47,137 +43,21 @@ class LocalBeelineExecutor():
         #  out += from_child.read()
         #  err += child_err.read()
         #  status = pipe.wait()
-        #  sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
-        #  out, err = sp.communicate()
+        sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
+        out, err = sp.communicate()
 
-        #  out = subprocess.check_output(cmd, stderr=None)
-        #  status, out = commands.getstatusoutput(''.join(cmd))
-        #  pout, pin, perr = popen2.popen3(cmd)
-        #  err = perr.readlines()
-        #  beeline_rows = pout.readlines()
-        #  pout.close()
-        #  pin.close()
-        #  perr.close()
-        #  out = ''
-        #  err = ''
-        #  print(err)
-        #  print(out)
-        #  print(status)
-        #  beeline_rows = _clean_result(out)
-        time.sleep(1)
-        beeline_rows = [
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            '|172_28_36_89__product_pop_12_4__product_12',
-            ]
-        #  result_collector = dict()
-        #  for row in beeline_rows:
-        #  row = row.strip('-+| ')
-        #  if not row:
-        #  continue
+        print(err)
+        print(out)
+        beeline_rows = _clean_result(out)
+        result_collector = dict()
+        for row in beeline_rows:
+            row = row.strip('-+| ')
+            if not row:
+                continue
 
-        #  result_collector[row] = 1
+            result_collector[row] = 1
 
-        #  return result_collector.keys()
-        return beeline_rows
+        return result_collector.keys()
 
 
 def _clean_result(raw_result):
