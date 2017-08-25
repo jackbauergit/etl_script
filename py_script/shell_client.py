@@ -29,9 +29,11 @@ class LocalBeelineExecutor():
             '--showWarnings=false',
             '-e', quote_stmt]
         print(cmd)
-        sp = subprocess.Popen(
-            cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
-        out, err = sp.communicate()
+        #  sp = subprocess.Popen(
+        #  cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
+        #  out, err = sp.communicate()
+        out = ''
+        err = ''
         print(out)
         print(err)
         beeline_rows = _clean_result(out)
