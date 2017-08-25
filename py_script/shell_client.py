@@ -3,7 +3,7 @@
 
 
 import subprocess
-import popen2
+#  import popen2
 #  import os
 #  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
@@ -30,21 +30,20 @@ class LocalBeelineExecutor():
             '--showWarnings=false',
             '-e', quote_stmt]
         print(cmd)
-        #  sp = subprocess.Popen(
-        #  cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
-        #  out, err = sp.communicate()
+        sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
+        out, err = sp.communicate()
 
-        pout, pin, perr = popen2.popen3(cmd)
-        err = perr.readlines()
-        beeline_rows = pout.readlines()
-        pout.close()
-        pin.close()
-        perr.close()
+        #  pout, pin, perr = popen2.popen3(cmd)
+        #  err = perr.readlines()
+        #  beeline_rows = pout.readlines()
+        #  pout.close()
+        #  pin.close()
+        #  perr.close()
         out = ''
         err = ''
         print(out)
         print(err)
-        #  beeline_rows = _clean_result(out)
+        beeline_rows = _clean_result(out)
         result_collector = dict()
         for row in beeline_rows:
             row = row.strip('-+| ')
