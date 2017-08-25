@@ -39,8 +39,8 @@ class LocalBeelineExecutor():
         #  pout.close()
         #  pin.close()
         #  perr.close()
-        out = ''
-        err = ''
+        #  out = ''
+        #  err = ''
         print(out)
         print(err)
         beeline_rows = _clean_result(out)
