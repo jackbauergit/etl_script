@@ -3,6 +3,7 @@
 
 
 import subprocess
+#  import popen2
 #  from logger import logger_etl as logger
 from config import thrift_ip, thrift_port, thrift_user
 
@@ -29,20 +30,6 @@ class LocalBeelineExecutor():
             '-e', quote_stmt]
         cmd = ' '.join(cmd)
         print(cmd)
-        #  pipe = popen2.Popen3(cmd, True)
-        #  to_child = pipe.tochild
-        #  from_child = pipe.fromchild
-        #  child_err = pipe.childerr
-        #  #  if data:
-        #  #  to_child.write(data)
-        #  to_child.close()
-        #  out = err = ''
-        #  while pipe.poll() is None:
-        #  out += from_child.read()
-        #  err += child_err.read()
-        #  out += from_child.read()
-        #  err += child_err.read()
-        #  status = pipe.wait()
         sp = subprocess.Popen(cmd, stderr=None, stdout=None, shell=False)
         out, err = sp.communicate()
 
@@ -95,6 +82,7 @@ class ShellExecutor():
 
     def execute(self):
         print(self.stmt)
+        #  ()
         sp = subprocess.Popen(
             self.stmt, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
             shell=False)
