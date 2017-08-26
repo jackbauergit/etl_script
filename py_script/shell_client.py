@@ -28,7 +28,7 @@ class LocalBeelineExecutor():
             '--showHeader=false',
             '--showWarnings=false',
             '-e', quote_stmt]
-        cmd = ' '.join(cmd)
+        #  cmd = ' '.join(cmd)
         logger.debug(cmd)
         sp = subprocess.Popen(
             cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=False)
