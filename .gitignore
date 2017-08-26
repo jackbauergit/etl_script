@@ -2,3 +2,4 @@
 *.log
 *.swp
 one_key.sh
+*test.py
